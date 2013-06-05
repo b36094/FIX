@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+   <element>
+      <genreItem>Romance</genreItem>
+      <lengthItem>60</lengthItem>
+      <mediaType>AudioCd</mediaType>
+      <name>Called from the XML file</name>
+      <notes>This is audio tape.</notes>
+      <pubDate>02-02-1999</pubDate>
+      <purchaseDate>11-11-2004</purchaseDate>
+   </element>
+   <element>
+      <genreItem>Romance</genreItem>
+      <lengthItem>60</lengthItem>
+      <mediaType>AudioCd</mediaType>
+      <name>Called from the XML file</name>
+      <notes>This is audio tape.</notes>
+      <pubDate>02-02-1999</pubDate>
+      <purchaseDate>11-11-2004</purchaseDate>
+   </element>
+   <element>
+      <genreItem>Romance</genreItem>
+      <lengthItem>60</lengthItem>
+      <mediaType>AudioCd</mediaType>
+      <name>Called from the XML file</name>
+      <notes>This is audio tape.</notes>
+      <pubDate>02-02-1999</pubDate>
+      <purchaseDate>11-11-2004</purchaseDate>
+   </element>
+   <element>
+      <genreItem>Romance</genreItem>
+      <lengthItem>60</lengthItem>
+      <mediaType>AudioCd</mediaType>
+      <name>Called from the XML file</name>
+      <notes>This is audio tape.</notes>
+      <pubDate>02-02-1999</pubDate>
+      <purchaseDate>11-11-2004</purchaseDate>
+   </element>
+</root>

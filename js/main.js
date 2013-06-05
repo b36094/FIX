@@ -17,18 +17,81 @@ $(document).on('pagebeforeshow', '#homePage', function(){
 			$.ajax ({
 				url: "xhr/JSONFile.json",
 				type: "GET",
-				datatype: "json",
+				dataType: "json",
 				success: function(response) {
+					console.log(response);
 					
-					//console.log(response);
-					fillIn();
-					alert ("Success! I loaded some data for you.");
+					//1. Get the lenght of the localStorage
+					var localStL = response.length;
 					
-				}
-			});
+					console.log(response.length);
+
+					$('#container').empty();
+						
+					//Create a <ul> filter that holds all the <li>
+					var ulListView0 = $('#container').append('<ul data-role = "listview" data-filter="true" data-inset = "true" data-corners = "true" id = "ulListView"></ul>');
+						
+					for ( var i = 0, j = localStL; i < j; i ++) {
+						
+						var nameItem = response[i].name;	
+						var _id = Math.floor(Math.random() * 10000001);
+						var mediaChoice = response[i].mediaType;
+						var genreItem = response[i].genreItem;
+						var lengthItem = response[i].lengthItem;
+						var pubDate = response[i].pubDate;
+						var purchaseDate = response[i].purchaseDate;
+						var notes = response[i].notes;
+						console.log (response[i].mediaType);
+						
+						//Create a <li> tag that holds the localStorage object
+						var insideLi0 = $('#ulListView').append('<li id = "'+_id+'" data-entryname ="'+nameItem+'" data-mediatype ="'+mediaChoice+'" data-genre ="'+genreItem+'" data-length = "'+lengthItem+'" data-rldate = "'+pubDate+'" data-prdate = "'+purchaseDate+'" data-notes = "'+notes+'"><a href="#detailsPage" data-transition = "slide"><img src = "images/'+filterImage(mediaChoice)+'" class="ui-li-icon ui-corner-none"/><span><p><strong>'+nameItem+'</strong></p></span><p class = "ui-li-aside">'+mediaChoice+'</p></a></li>');
+					
+						//This line refreshes the listview attribute in jqm (there are some issues in the #homePage with the way they display)
+						insideLi0.listview().listview('refresh');
+					
+					} // here ends for loop
+				
+				} // here ends first ajax call success
+				
+			}); //here ends first ajax call
+			
+			$.ajax ({
+				url: "xhr/XMLFile.xml",
+				type: "GET",
+				dataType: "xml",
+				success: function(response1) {
+					console.log(response1);
+					
+					//Create a <ul> filter that holds all the <li>
+					var ulListView1 = $('#container').append('<ul data-role = "listview" data-filter="true" data-inset = "true" data-corners = "true" id = "ulListView"></ul>');
+						
+					$(response1).find('element').each(function() {
+						
+						var nameItem1 = $(this).find('name').text();	
+						var _id1 = Math.floor(Math.random() * 10000001);
+						var mediaChoice1 = $(this).find('mediaType').text();
+						var genreItem1 = $(this).find('genreItem').text();
+						var lengthItem1 = $(this).find('lengthItem').text();
+						var pubDate1 = $(this).find('pubDate').text();
+						var purchaseDate1 = $(this).find('purchaseDate').text();
+						var notes1 = $(this).find('notes').text();
+						console.log (pubDate1);
+						
+						//Create a <li> tag that holds the localStorage object
+						var insideLi1 = $('#ulListView').append('<li id = "'+_id1+'" data-entryname ="'+nameItem1+'" data-mediatype ="'+mediaChoice1+'" data-genre ="'+genreItem1+'" data-length = "'+lengthItem1+'" data-rldate = "'+pubDate1+'" data-prdate = "'+purchaseDate1+'" data-notes = "'+notes1+'"><a href="#detailsPage" data-transition = "slide"><img src = "images/'+filterImage(mediaChoice1)+'" class="ui-li-icon ui-corner-none"/><span><p><strong>'+nameItem1+'</strong></p></span><p class = "ui-li-aside">'+mediaChoice1+'</p></a></li>');
+					
+						//This line refreshes the listview attribute in jqm (there are some issues in the #homePage with the way they display)
+						insideLi1.listview().listview('refresh');
+					
+					}); // here ends for loop
+				
+				} // here ends second ajax call success
+				
+			}); //here ends second ajax call
 		
-		}
-	}
+		} // here ends confirm check
+	
+	} // here ends localStorage check
 	
 	else {
 		//call outputData function
@@ -43,115 +106,11 @@ $(document).on('pagebeforeshow', '#homePage', function(){
 		});
 	}
 	
-	
-	
-	
 });//here ends #homePage
 
 $(document).on('pageinit', '#homePage', function(){
 
 });
-
-//#newsFeed starts here
-$(document).on('pageinit', '#newsFeed', function(){
-	
-});//here ends #newsFeed
-
-//#aboutPage starts here
-$(document).on('pageinit', '#aboutPage', function(){
-	
-});//here ends #aboutPage
-
-//#detailsPage starts here
-$(document).on('pageinit', '#detailsPage', function(){
-	var idToPass = this.id;
-	console.log(idToPass);
-	//target the deleteButton
-	$('.delBtn').click(function(){
-		
-		/*on-click calls deleteEntry function that takes the object's id 
-		and delete the localStorage entry with the same key value*/
-		deleteEntry(this.id);
-		
-		window.location = "#homePage";
-	});
-	
-	//target the editButton
-	$('.editBtn').click(function(){
-		
-		/*on-click calls editObject function that takes the object's id
-		and inserts some of the object's properties into the newEntry page*/
-		editObject(this.id);
-	});
-
-});//here ends #detailsPage
-
-$(document).on('pagebeforeshow', '#detailsPage', function(){
-	$('#ulTop').listview().listview('refresh');
-});
-
-//#newEntryPage starts here
-$(document).on('pageinit', '#newEntry', function(){
-	
-	//function to parse the form
-	var $myFirstForm = $('#firstForm');
-	
-	//access the validation property (plugging)
-	$myFirstForm.validate({
-		//ignores the items that have the class "ignore" on them			
-		ignore: ".ignore",
-		invalidHandler: function() {},		
-		submitHandler: function(randomId){
-		
-			//serialize the form data into an object 
-			var data = $myFirstForm.serializeArray();
-			
-			//stringify the data from the form object
-			var jsonObj = JSON.stringify(data);
-			
-			/*implement a switch based on this being the edit pass or the newEntry pass
-			target the submitBt's value to check which one it is 
-			*--> if is Submit generate a new key else overwrite the same key for edit*/
-			if($('#submitBt').val() === "Submit") {
-			
-				//add a random number for the key
-				var randomId = genRandomId();
-			
-				//add the string conversion to the localStorage with a key-value
-				localStorage.setItem(randomId,jsonObj);
-			
-				//reset the form after localStorage insertion
-				$($myFirstForm)[0].reset();
-			
-				//refresh localStorage
-				window.location = '#homePage';
-			}
-			
-			else {
-				
-				var randomId2 = $('#submitBt').data('key');
-				
-				console.log(randomId2);
-				//add the string conversion to the localStorage with the same key
-				localStorage.setItem(randomId2,jsonObj);
-				
-				//reset the form after localStorage insertion
-				$($myFirstForm)[0].reset();
-				
-				//refresh localStorage
-				window.location = '#homePage';
-			}
-				
-		}
-	}); //here ends the validation function
-	
-	//Refresh the '#homePage' to display all the local store changes
-		
-	
-	
-});//here ends #newEntryPage
-
-
 
 //genRandomId function creates a random number and returns it to be caught by the validator 
 var genRandomId = function(){
@@ -159,7 +118,7 @@ var genRandomId = function(){
 	return randomId;
 };
 
-//dsplayData function outputs the localStorage on the '#homePage'
+//outputData function outputs the localStorage on the '#homePage'
 var outputData = function(){
 	//1. Get the lenght of the localStorage
 	var localStL = localStorage.length;
@@ -227,91 +186,5 @@ var filterImage = function(input) {
 	
 };
 
-/*displayDetails function*/
-var displayDetails = function (obj) {
-	$('.delBtn').attr('id', obj.id);
-	$('.editBtn').attr('id', obj.id);
-	
-	$('#contentSpace').empty();
-	
-	var ulTop = $('#contentSpace').append('<ul data-role="listview" data-inset="true" id="ulTop"></ul>');
-	var devider = $('#ulTop').append('<li data-role = "devider" data-theme = "b"><h2>Name: &nbsp;'+$(obj).attr('data-entryname')+'</h2></li>');
-	var lsMediaType = $('#ulTop').append('<li><p><strong>Media Type:</strong><span class = "ui-li-aside">'+$(obj).attr('data-mediatype')+'</span></p></li>');
-	var lsMediaGenre = $('#ulTop').append('<li><p><strong>Genre/Type:</strong><span class = "ui-li-aside">'+$(obj).attr('data-genre')+'</span></p></li>');
-	var lsMediaLength = $('#ulTop').append('<li><p><strong>Length:</strong><span class = "ui-li-aside">'+$(obj).attr('data-length')+'</span></p></li>');
-	var lsMediaRelease = $('#ulTop').append('<li><p><strong>Release Date:</strong><span class = "ui-li-aside">'+$(obj).attr('data-rldate')+'</span></p></li>');
-	var lsMediaPurchase = $('#ulTop').append('<li><p><strong>Purchase Date:</strong><span class = "ui-li-aside">'+$(obj).attr('data-prdate')+'</span></p></li>');
-	var lsMediaNotes = $('#ulTop').append('<li><p><strong>Notes:</strong><span class = "ui-li-aside">'+$(obj).attr('data-notes')+'</span></p></li>');	
-};
-
-/*deleteEntry function */
-var deleteEntry = function(obj) {
-	var confirmation = confirm("Are you sure?");
-	if(confirmation) {
-		localStorage.removeItem(obj);
-	}
-	
-	else {
-		return;
-	}
-};
-
-/*editObject function goes here*/
-var editObject = function(keyObj) {
-	
-	window.location = '#newEntry';
-	
-	//Target the submitBt and change its value to Edit
-	$('#submitBt').attr('value', 'Edit');
-	
-	//Add the attr key to the editBtn
-	$('#submitBt').data('key', keyObj);
-	
-	//Get the value under the specified key
-	var storedEditObj = localStorage.getItem(keyObj); 
-	
-	//Parse data back into an obj. to be able to access properties.
-	var parsedEditObj = JSON.parse(storedEditObj);
-	
-	//Add data into nameItem form in '#newEntry' page
-	 $('#nameItem').attr("value", parsedEditObj[1].value);
-	 
-	//Add data into #genreItem 
-	 $('#genreItem').attr("value", parsedEditObj[2].value);
-	 
-	 //Add data into #lengthItem 
-	 $('#lengthItem').attr("value", parsedEditObj[3].value);
-	 
-	 //Add data into #pubLength 
-	 $('#pubDate').attr("value", parsedEditObj[4].value);
-	 
-	 //Add data into #purchaseDate
-	 $('#purchaseDate').attr("value", parsedEditObj[5].value);
-	 
-	 //Add data into #notes
-	 $('textarea[id = notes]').val(parsedEditObj[6].value);
-	 
-	 //Gets the medidType value of the parsed object and forces the dropdown 
-	 //menu (from the edit page) to display the same mediaType, when editing an obj.
-	 var mediaOption = parsedEditObj[0].value;
-	 $('#mediaChoice').val(mediaOption);
-};
-
-
-//fillIn function creates pre-loaded data
-var fillIn = function () {
-	
-	for (var i = 0; i < 4; i++) {
-		
-		var funcKey = genRandomId();
-		var keyValue = '[{"name":"mediaChoice","value":"DataDvd"},{"name":"nameItem","value":"asdf"},{"name":"genreItem","value":"asdf"},{"name":"lengthItem","value":"3"},{"name":"pubDate","value":""},{"name":"purchaseDate","value":""},{"name":"noteName","value":"asf"}]"'
-		
-		localStorage.setItem(funcKey,keyValue);
-		
-		console.log(funcKey);
-	}
-	
-	
-}
 
 
