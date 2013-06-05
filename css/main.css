@@ -1,0 +1,24 @@
+/*
+
+			Name: Andrei Birsan
+	Course Month: 05.2013
+	File Purpose: Basic Start-up Template
+	
+*/
+
+.myButton{
+	background: green !important;
+	color: white !important;
+	margin-bottom:10px !important;
+}
+.hintText {
+	font-size:0.7em !important;
+}
+#contentSpace {
+	padding:0px 15px 15px 15px !important;
+
+}
+label.error {
+	color:red;
+	display: block;	
+}
